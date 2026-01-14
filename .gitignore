@@ -1,0 +1,6 @@
+# Ignore datasets
+data/raw/
+data/processed/
+
+# Ignore large csv files
+*.csv
