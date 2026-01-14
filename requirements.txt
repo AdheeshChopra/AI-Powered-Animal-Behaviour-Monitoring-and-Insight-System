@@ -1,0 +1,9 @@
+pandas
+numpy
+scikit-learn
+librosa
+scipy
+joblib
+streamlit
+pyserial
+kaggle   # for dataset download
