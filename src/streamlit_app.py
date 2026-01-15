@@ -3,15 +3,34 @@ import pandas as pd
 import joblib
 import numpy as np
 import os
+import time
 from scipy.stats import skew, kurtosis
 
 DATA_PATH = "data/processed/movement_clean.csv"
 MODEL_PATH = "models/movement_rf_model.pkl"
 
-st.set_page_config(page_title="Canine Behavior Classifier", layout="wide")
-st.title("🐶 Canine Behavior Classification Dashboard")
+LABEL_TO_POSITION = {
+    0: "lying",
+    1: "sitting",
+    2: "walking",
+    3: "standing",
+    4: "body shake",
+    5: "running"
+}
 
-# Load data
+LABEL_TO_BEHAVIOR = {
+    "lying": "Calm",
+    "lying down": "Calm",
+    "sitting": "Calm",
+    "standing": "Active",
+    "walking": "Active",
+    "running": "Aggressive",
+    "body shake": "Aggressive"
+}
+
+st.set_page_config(page_title="Canine Behavior Classifier", layout="wide")
+st.title("🐶 Behavior Classification Dashboard")
+
 @st.cache_data
 def load_data():
     df = pd.read_csv(DATA_PATH)
@@ -43,7 +62,7 @@ def extract_features(window):
 window_size = st.sidebar.slider("Select Window Size", 10, 100, 50, step=10)
 step_size = st.sidebar.slider("Step Size", 10, 100, 50, step=10)
 st.sidebar.markdown("---")
-st.sidebar.markdown("Made with ❤️ by You")
+st.sidebar.markdown("Behaviour Analysis")
 
 # Main simulation loop
 st.subheader("Live Predictions")
@@ -53,6 +72,10 @@ for i in range(0, len(df) - window_size, step_size):
     window = df.iloc[i:i + window_size]
     features = extract_features(window)
     prediction = model.predict(features)[0]
+    position = LABEL_TO_POSITION.get(prediction, "Unknown")
+    behavior = LABEL_TO_BEHAVIOR.get(position, "Unknown")
+
     with placeholder.container():
-        st.markdown(f"### 🧠 Predicted Behavior: `{prediction}`")
+        st.markdown(f"### 🧠 Predicted Behavior: `{behavior}`")
         st.dataframe(window[sensor_cols].tail(5))
+        time.sleep(0.5)
