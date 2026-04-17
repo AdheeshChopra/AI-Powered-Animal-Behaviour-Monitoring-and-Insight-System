@@ -1,0 +1,22 @@
+name: Sync Fork
+
+on:
+  schedule:
+    - cron: '0 * * * *'   # runs every hour
+  workflow_dispatch:       # allows manual run
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Sync fork
+        uses: repo-sync/github-sync@v2
+        with:
+          source_repo: "AryanManhas/AI-Powered-Animal-Behaviour-Monitoring-and-Insight-System"
+          source_branch: "main"
+          destination_branch: "main"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
